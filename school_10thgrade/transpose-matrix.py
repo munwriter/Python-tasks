@@ -13,6 +13,7 @@ for i in range(col):
     for j in range(row):
         el.append(matrix[j][i])
     transpose_matrix.append(el)
+
 print(matrix)
 print(transpose_matrix)
 
