@@ -1,0 +1,5 @@
+Country: China, Capital: Beijing
+Country: France, Capital: Paris
+Country: Germany, Capital: Berlin
+Country: Italy, Capital: Rome
+Country: Russia, Capital: Moscow

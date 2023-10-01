@@ -1,0 +1,5 @@
+France,Paris
+Italy,Rome
+Russia,Moscow
+China,Beijing
+Germany,Berlin
