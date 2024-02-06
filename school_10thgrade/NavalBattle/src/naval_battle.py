@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from coordinates import Coordinates, LetterCoordinates
+from coordinates import Coordinates, LetterCoordinates, NumCoordinates
 
 
 class NavalBattle:
@@ -13,13 +13,12 @@ class NavalBattle:
     def _load_field(self, path: str | Path) -> list[list[int]]:
         field = []
         with open(path, "tr") as f:
-            for line in f:
-                formatted_line = list(map(int, line.strip()))
+            for _ in range(10):
+                formatted_line = list(map(int, f.readline().strip()))
                 field.append(formatted_line)
-
         return field
 
-    def _define_ships_positions(self, battlefield):
+    def _define_ships_positions(self, battlefield) -> list[list[Coordinates]]:
         # TODO find more optimized way
         CRITICAL_COORDS = (0, 9)  # TODO Enums maybe
         ship = None
@@ -67,10 +66,42 @@ class NavalBattle:
         return flotilla
 
     def strike(
-        self, x_position: int, y_position: int
-    ) -> Literal["hurt", "eliminate", "miss"]:
-        ...
+        self, x_position: int, y_position: int | str
+    ) -> Literal["hurt", "eliminate", "miss", "мимо", "убил", "ранил"]:
+        for ship in self.flotilla:
+            for coordinate in ship:
+                if coordinate.coordinates == f"{y_position}{x_position}":
+                    ship.remove(self.__Cords(x_position - 1, y_position))
+                    if ship:
+                        return "ранил"
+                    else:
+                        return "убил"
+        return "мимо"
 
 
-a = NavalBattle(r"school_10thgrade\NavalBattle\battlefield.txt", LetterCoordinates)
-print(a.flotilla)
+def parse_strike_coords(path: str | Path) -> list[list]:
+    strike_coordinates = []
+    with open(path, "rt", encoding="utf-8") as f:
+        lines = f.readlines()[10:]
+        for line in lines:
+            line = line.strip()
+            strike_coordinates.append([int(line[1:]), line[0].lower()])
+
+    return strike_coordinates
+
+
+if __name__ == "__main__":
+    battle = NavalBattle(
+        r"school_10thgrade\NavalBattle\src\battlefield.txt", LetterCoordinates
+    )
+    print(battle.flotilla)
+    strike_coordinates = parse_strike_coords(
+        r"school_10thgrade\NavalBattle\src\battlefield.txt"
+    )
+    info = []
+    for coordinate in strike_coordinates:
+
+        info.append(f"{battle.strike(*coordinate)}\n")
+    info[-1] = info[-1].strip()
+    with open("output.txt", "wt", encoding="utf-8") as f:
+        f.writelines(info)
